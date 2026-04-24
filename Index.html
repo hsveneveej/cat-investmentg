@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🐱 CAT INVESTMENT · OFICIAL</title>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCV-H6MSuyRQgdIqvq36tv87Xcs2DWFJKo",
+            authDomain: "cst-investiment-132.firebaseapp.com",
+            databaseURL: "https://cst-investiment-132-default-rtdb.firebaseio.com/",
+            projectId: "cst-investiment-132",
+            storageBucket: "cst-investiment-132.firebasestorage.app",
+            messagingSenderId: "263336942674",
+            appId: "1:263336942674:web:c70e2b2bc82bb8efaa138b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.firebaseDB = database;
+        window.firebaseRef = ref;
+        window.firebaseSet = set;
+        window.firebaseGet = get;
+        window.firebaseUpdate = update;
+        window.firebaseOnValue = onValue;
+    </script>
+
+    <style>
+        :root {
+            --lime: #32cd32;
+            --orange: #ff4500;
+            --dark: #000;
+            --card: #111;
+            --gold: #ffd700;
+            --blue: #00b4db;
+            --red: #ef4444;
+            --pink: #ff69b4;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        body {
+            background: var(--dark);
+            color: white;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .header-adm {
+            text-align: center;
+            padding: 15px 0;
+            background: #050505;
+            border-bottom: 1px solid #111;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .header-adm h1 {
+            color: var(--lime);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .cat-mascot {
+            font-size: 26px;
+            animation: bounce 1.5s infinite;
+            cursor: pointer;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .screen {
+            display: none;
+            padding: 12px;
+            padding-bottom: 85px;
+        }
+        .screen.active {
+            display: block;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            background: #1a1a1a;
+            border: 1.5px solid #333;
+            color: white;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        button {
+            border: none;
+            border-radius: 35px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            font-size: 15px;
+            background: var(--lime);
+            color: #000;
+            transition: all 0.2s;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #555 !important;
+            color: #888 !important;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid #222;
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 450px;
+            height: 65px;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 99;
+            margin: auto;
+        }
+        .nav-link {
+            color: #777;
+            text-decoration: none;
+            font-size: 10px;
+            text-align: center;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .nav-link.active {
+            color: var(--lime);
+            background: rgba(50, 205, 50, 0.1);
+        }
+        .nav-link .icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .login-box {
+            background: #0f0f0f;
+            border-radius: 30px;
+            padding: 25px 18px;
+            border: 1px solid #2a2a2a;
+        }
+        .login-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .login-tab {
+            flex: 1;
+            text-align: center;
+            padding: 11px;
+            background: #1a1a1a;
+            border-radius: 25px;
+            cursor: pointer;
+            color: #888;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .login-tab.active {
+            background: var(--lime);
+            color: #000;
+        }
+        .login-form {
+            display: none;
+        }
+        .login-form.active {
+            display: block;
+        }
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            background: #0e0e0e;
+            padding: 4px;
+            border-radius: 40px;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 9px;
+            border-radius: 35px;
+            color: #aaa;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            background: var(--lime);
+            color: #000;
+        }
+        .vip-grid, .wealth-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        .vip-card, .wealth-card {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 18px;
+            padding: 14px;
+            border: 1.5px solid;
+        }
+        .vip-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 18px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .badge-vip1 {
+            background: #32cd32;
+            color: #000;
+        }
+        .badge-vip2 {
+            background: #ffd700;
+            color: #000;
+        }
+        .badge-vip3 {
+            background: #ff4500;
+            color: #fff;
+        }
+        .vip-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        .vip-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .vip-label {
+            font-size: 9px;
+            color: #aaa;
+        }
+        .vip-value {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+        .vip-title, .wealth-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            margin: 6px 0;
+        }
+        .earnings-dashboard {
+            display: flex;
+            gap: 6px;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+        .earning-card {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 14px;
+            padding: 10px 14px;
+            text-align: center;
+            border: 1px solid #333;
+            min-width: 90px;
+        }
+        .earning-card.highlight {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, #2a2a0a, #1a1a0a);
+        }
+        .earning-label {
+            font-size: 10px;
+            color: #aaa;
+        }
+        .earning-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--lime);
+        }
+        .earning-value.gold {
+            color: var(--gold);
+        }
+        .roulette-container {
+            background: linear-gradient(135deg, #1a0a2a, #0a0a1a);
+            border-radius: 22px;
+            padding: 18px;
+            margin: 18px 0;
+            border: 2px solid var(--gold);
+            text-align: center;
+        }
+        .support-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(50, 205, 50, 0.15);
+            border: 1.5px solid var(--lime);
+            border-radius: 35px;
+            padding: 7px 18px;
+            cursor: pointer;
+            color: var(--lime);
+            font-size: 13px;
+        }
+        .sync-status {
+            position: fixed;
+            bottom: 75px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--lime);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 9px;
+            z-index: 1000;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .admin-table th, .admin-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        .admin-table th {
+            color: var(--gold);
+        }
+        .btn-delete {
+            background: var(--red);
+            color: white;
+            padding: 4px 8px;
+            font-size: 10px;
+            border-radius: 15px;
+            width: auto;
+        }
+        .btn-orange {
+            background: var(--orange) !important;
+            color: #fff !important;
+        }
+        .btn-gold {
+            background: var(--gold) !important;
+            color: #000 !important;
+        }
+        .btn-danger {
+            background: var(--red) !important;
+            color: white !important;
+        }
+        .btn-warning {
+            background: var(--orange) !important;
+            color: white !important;
+        }
+        .btn-block {
+            background: var(--red) !important;
+            color: white !important;
+        }
+        .btn-unblock {
+            background: var(--lime) !important;
+            color: #000 !important;
+        }
+        .timer-display {
+            display: flex;
+            gap: 12px;
+            margin: 8px 0;
+        }
+        .timer-item {
+            text-align: center;
+        }
+        .timer-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+        .timer-label {
+            font-size: 9px;
+            color: #888;
+        }
+        .daily-timer-info {
+            margin-top: 6px;
+            font-size: 11px;
+        }
+        .daily-timer-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+        }
+        .sunday-banner {
+            background: linear-gradient(135deg, #2a0a0a, #1a0a0a);
+            border: 2px solid var(--red);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+            display: none;
+        }
+        .sunday-banner.active {
+            display: block;
+        }
+        .sunday-banner h4 {
+            color: var(--red);
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .sunday-banner p {
+            color: #ccc;
+            font-size: 12px;
+        }
+        .active-funds-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .fund-item {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--orange);
+        }
+        .fund-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .fund-name {
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 13px;
+        }
+        .fund-count {
+            background: var(--lime);
+            color: #000;
+            padding: 2px 7px;
+            border-radius: 15px;
+            font-size: 10px;
+        }
+        .fund-dates {
+            font-size: 10px;
+            color: #aaa;
+            margin: 4px 0;
+        }
+        .progress-bar {
+            background: #333;
+            height: 5px;
+            border-radius: 3px;
+            margin: 6px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: var(--lime);
+            height: 100%;
+            border-radius: 3px;
+        }
+        .admin-search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .admin-search-box input {
+            flex: 1;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            color: white;
+            border-radius: 14px;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        .admin-search-box button {
+            width: auto;
+            padding: 12px 16px;
+            background: var(--gold);
+            color: #000;
+            font-size: 14px;
+        }
+        .search-result-card {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 18px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 2px solid var(--gold);
+        }
+        .user-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .user-detail-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 8px;
+            border-left: 3px solid var(--lime);
+        }
+        .user-detail-label {
+            font-size: 9px;
+            color: #888;
+        }
+        .user-detail-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--lime);
+        }
+        .user-detail-value.gold {
+            color: var(--gold);
+        }
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .user-actions button {
+            flex: 1;
+            padding: 10px;
+            font-size: 12px;
+            min-width: 70px;
+        }
+        .invite-stats-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .invite-stat-card {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            border: 2px solid;
+            animation: pulse 2s infinite;
+        }
+        .invite-stat-card:nth-child(1) { animation-delay: 0s; }
+        .invite-stat-card:nth-child(2) { animation-delay: 0.3s; }
+        .invite-stat-card:nth-child(3) { animation-delay: 0.6s; }
+        .invite-stat-card:nth-child(4) { animation-delay: 0.9s; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .invite-stat-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        .invite-stat-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .invite-stat-label {
+            font-size: 9px;
+            color: #888;
+            text-transform: uppercase;
+        }
+        .invite-tabs {
+            display: flex;
+            gap: 4px;
+            margin: 12px 0;
+            background: #0e0e0e;
+            padding: 3px;
+            border-radius: 25px;
+        }
+        .invite-tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 6px;
+            border-radius: 22px;
+            color: #888;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+        .invite-tab.active {
+            background: var(--lime);
+            color: #000;
+        }
+        .invited-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .invited-user-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #333;
+        }
+        .invited-user-card.qualified {
+            border-left-color: var(--lime);
+            background: linear-gradient(135deg, #1a2a1a, #1a1a1a);
+        }
+        .invited-user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .invited-user-avatar.qualified {
+            background: rgba(50, 205, 50, 0.2);
+        }
+        .invited-user-avatar.not-qualified {
+            background: rgba(85, 85, 85, 0.2);
+        }
+        .invited-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .invited-user-name {
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .invited-user-phone {
+            font-size: 10px;
+            color: #888;
+        }
+        .invited-user-status {
+            display: flex;
+            gap: 4px;
+            margin-top: 3px;
+            flex-wrap: wrap;
+        }
+        .invited-status-badge {
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 8px;
+            font-weight: bold;
+        }
+        .status-active {
+            background: rgba(50, 205, 50, 0.2);
+            color: var(--lime);
+        }
+        .status-pending {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--orange);
+        }
+        .status-vip {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--gold);
+        }
+        .no-invites {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 13px;
+        }
+        .blocked-badge {
+            background: var(--red);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 3px 0;
+        }
+        .unblocked-badge {
+            background: var(--lime);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 3px 0;
+        }
+        .blocked-msg {
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid var(--red);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            margin: 10px 0;
+            display: none;
+        }
+        .blocked-msg.active {
+            display: block;
+        }
+        .blocked-msg h4 {
+            color: var(--red);
+            margin-bottom: 8px;
+        }
+        .blocked-msg p {
+            color: #ccc;
+            font-size: 12px;
+        }
+        .pending-msg {
+            background: rgba(255, 165, 0, 0.15);
+            border: 2px solid var(--orange);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            margin: 10px 0;
+            display: none;
+        }
+        .pending-msg.active {
+            display: block;
+        }
+        .pending-msg h4 {
+            color: var(--orange);
+            margin-bottom: 8px;
+        }
+        .pending-msg p {
+            color: #ccc;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div style="max-width:450px;margin:auto;min-height:100vh;position:relative;">
+    <div class="sync-status" id="sync-status">🔄 Conectando...</div>
+    <div class="header-adm"><h1 onclick="tapAdm()">🐱 CAT INVESTMENT</h1><span class="cat-mascot" onclick="catJump()">😺</span></div>
+
+    <!-- LOGIN -->
+    <div id="scr-login" class="screen active">
+        <div class="login-box">
+            <div style="text-align:center;margin-bottom:14px;"><span style="background:var(--lime);color:#000;padding:5px 12px;border-radius:50px;font-size:11px;">⚡ ECONOMIA DIGITAL · MZ</span></div>
+            <div class="login-tabs"><div class="login-tab active" onclick="switchLoginTab('login')">🔐 ENTRAR</div><div class="login-tab" onclick="switchLoginTab('register')">✨ CRIAR</div><div class="login-tab" onclick="switchLoginTab('recover')">🔑 RECUPERAR</div></div>
+            <div id="login-form" class="login-form active"><input type="text" id="login-phone" placeholder="Número Celular"><input type="password" id="login-pass" placeholder="Senha"><button onclick="handleLogin()">🔐 ENTRAR</button></div>
+            <div id="register-form" class="login-form"><input type="text" id="reg-name" placeholder="Nome Completo"><input type="text" id="reg-phone" placeholder="Número Celular"><input type="password" id="reg-pass" placeholder="Senha"><input type="hidden" id="ref-input"><button class="btn-orange" onclick="handleCreateAccount()">✨ CRIAR CONTA</button></div>
+            <div id="recover-form" class="login-form"><p style="color:#aaa;font-size:12px;">Digite seu número para recuperação</p><input type="text" id="recover-phone" placeholder="Número Celular"><button class="btn-orange" onclick="requestRecovery()">📤 SOLICITAR</button></div>
+        </div>
+        <div style="background:#0a0a0a;border-radius:18px;padding:12px;margin-top:16px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--gold);">📡 ATIVIDADES RECENTES</span><span style="color:#888;font-size:9px;">Ao vivo 🔴</span></div><div id="fake-feed"></div></div>
+        <div style="text-align:center;margin-top:12px;"><div class="support-btn" onclick="window.open('https://wa.me/258851511841','_blank')">📞 SUPORTE 851511841</div></div>
+    </div>
+
+    <!-- HOME -->
+    <div id="scr-home" class="screen">
+        <div class="sunday-banner" id="sunday-banner"><h4>⛪ DOMINGO - DIA DE DESCANSO</h4><p>Depósitos liberados. Coletas, roleta e saques bloqueados.</p></div>
+        <div class="blocked-msg" id="blocked-msg-home"><h4>🔒 CONTA BLOQUEADA</h4><p>Seus saques estão bloqueados. Convide alguém que ative um VIP para desbloquear!</p></div>
+        <div class="pending-msg" id="pending-msg-home"><h4>⏳ AGUARDANDO DESBLOQUEIO</h4><p>Você já convidou alguém! Aguardando aprovação do depósito.</p></div>
+        <div class="card" style="text-align:center;"><p style="font-size:11px;color:#aaa;">SALDO PRINCIPAL</p><h1 id="bal-txt" style="color:var(--lime);font-size:38px;">MT 0.00</h1><p id="user-info" style="font-size:11px;background:#1e1e1e;display:inline-block;padding:5px 15px;border-radius:25px;"></p></div>
+        <div class="card" style="background:linear-gradient(135deg,#1a0a2a,#0a0a1a);"><h4 style="color:var(--gold);margin-bottom:12px;">⏰ CONTAGEM REGRESSIVA</h4><div class="timer-display"><div class="timer-item"><div class="timer-value" id="roulette-timer">--:--:--</div><div class="timer-label">🎰 Roleta</div></div><div class="timer-item"><div class="timer-value" id="withdrawal-timer">--:--:--</div><div class="timer-label">💸 Saque</div></div></div></div>
+        <div class="earnings-dashboard" id="earnings-dashboard"><div class="earning-card"><div class="earning-label">📅 Ontem</div><div class="earning-value" id="earn-yesterday">MT 0</div></div><div class="earning-card highlight"><div class="earning-label">☀️ Hoje</div><div class="earning-value gold" id="earn-today">MT 0</div></div><div class="earning-card"><div class="earning-label">📆 Mês</div><div class="earning-value" id="earn-month">MT 0</div></div><div class="earning-card"><div class="earning-label">🚀 2 Anos</div><div class="earning-value" id="earn-projection">MT 0</div></div></div>
+        <div id="daily-section" style="display:none;"><div style="background:linear-gradient(135deg,#1a2a1a,#0a1a0a);border:2px solid var(--gold);border-radius:18px;padding:18px;text-align:center;"><p style="font-size:11px;color:#aaa;">📅 GANHO DIÁRIO</p><div style="font-size:28px;font-weight:bold;color:var(--gold);" id="daily-amount">MT 0.00</div><button id="daily-collect-btn" style="background:var(--gold);color:#000;margin-top:8px;" onclick="collectDaily()"><span id="collect-btn-text">💰 COLETAR</span></button><div id="daily-timer-info" class="daily-timer-info"></div></div></div>
+        <div class="tabs"><div id="t1" class="tab active" onclick="switchTab(1)">⭐ CAT VIP</div><div id="t2" class="tab" onclick="switchTab(2)">🏦 FUNDO RIQUEZA</div></div>
+        <div id="list-vips" class="vip-grid"></div><div id="list-wealth" class="wealth-grid" style="display:none;"></div>
+        <div style="margin-top:18px;"><h4 style="color:var(--gold);margin-bottom:12px;">📦 MEUS FUNDOS ATIVOS</h4><div id="active-funds-list" class="active-funds-list"></div></div>
+    </div>
+
+    <!-- DEPÓSITO -->
+    <div id="scr-dep" class="screen">
+        <h3 style="color:var(--lime);">📥 DEPÓSITO RÁPIDO</h3>
+        <p style="color:var(--lime);font-size:11px;margin-bottom:8px;">✅ Depósitos permitidos todos os dias!</p>
+        <div class="card" style="background:linear-gradient(135deg,#0a1a0a,#050505);border:2px solid var(--lime);">
+            <div style="text-align:center;margin-bottom:12px;"><span style="background:var(--lime);color:#000;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:bold;">📱 M-PESA</span></div>
+            <div style="background:#0a0a0a;border-radius:16px;padding:16px;text-align:center;border:1px solid #222;">
+                <div style="font-size:12px;color:#aaa;margin-bottom:6px;">ENVIE PARA:</div>
+                <div style="font-size:26px;font-weight:bold;color:var(--lime);letter-spacing:2px;" id="txt-mpesa">851511841</div>
+                <div style="font-size:13px;color:#ccc;margin-top:4px;">👤 Benjamim Celeste</div>
+            </div>
+        </div>
+        <div style="text-align:center;margin:4px 0;color:#888;font-weight:bold;font-size:14px;">OU</div>
+        <div class="card" style="background:linear-gradient(135deg,#0a0a1a,#050510);border:2px solid var(--blue);">
+            <div style="text-align:center;margin-bottom:12px;"><span style="background:var(--blue);color:#000;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:bold;">📱 e-MOLA</span></div>
+            <div style="background:#0a0a0a;border-radius:16px;padding:16px;text-align:center;border:1px solid #222;">
+                <div style="font-size:12px;color:#aaa;margin-bottom:6px;">ENVIE PARA:</div>
+                <div style="font-size:26px;font-weight:bold;color:var(--blue);letter-spacing:2px;" id="txt-emola">870514180</div>
+                <div style="font-size:13px;color:#ccc;margin-top:4px;">👤 Amélia Ricardo</div>
+            </div>
+        </div>
+        <div style="background:rgba(255,215,0,0.1);border:1px solid var(--gold);border-radius:14px;padding:12px;margin:12px 0;"><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:22px;">⚠️</span><div><div style="font-size:11px;color:var(--gold);font-weight:bold;">IMPORTANTE</div><div style="font-size:10px;color:#ccc;">Após enviar, preencha os dados abaixo</div></div></div></div>
+        <input type="text" id="dep-numero" placeholder="Seu número (que enviou)">
+        <input type="text" id="dep-nome" placeholder="Seu nome completo">
+        <input type="number" id="in-amt" placeholder="Valor do Depósito (MT)">
+        <textarea id="in-ref" placeholder="Comprovante / Referência (ex: TX123456)"></textarea>
+        <button onclick="sendDep()" style="background:var(--gold);color:#000;font-size:16px;">✅ CONFIRMAR DEPÓSITO</button>
+        <p style="text-align:center;font-size:10px;color:#666;margin-top:8px;">⏱️ Creditado após aprovação do admin</p>
+    </div>
+
+    <!-- SAQUE -->
+    <div id="scr-out" class="screen">
+        <h3 style="color:var(--orange);">💸 LEVANTAMENTO</h3>
+        <div id="sunday-saque-banner" class="sunday-banner"><h4>⛪ DOMINGO - SAQUES BLOQUEADOS</h4><p>Volte na segunda-feira.</p></div>
+        <div class="card" style="border-left:5px solid var(--orange);"><p style="font-size:11px;color:var(--orange);">⚠️ TAXA: 10% · 1 SAQUE/DIA</p></div>
+        <div id="withdrawal-status-container"></div>
+        <input type="text" id="out-numero" placeholder="Seu número (M-Pesa / e-Mola)">
+        <input type="text" id="out-nome" placeholder="Seu nome completo">
+        <div id="grid-out" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;"></div>
+        <input type="text" id="out-val" placeholder="MT 0.00" readonly style="text-align:center;font-weight:bold;color:var(--gold);font-size:17px;background:#1a1a1a;border:1px solid var(--orange);">
+        <button id="btn-submit-out" class="btn-orange" onclick="sendOut()">📤 SOLICITAR SAQUE</button>
+    </div>
+
+    <!-- CONVIDAR -->
+    <div id="scr-invite" class="screen">
+        <h3 style="color:var(--lime);">👥 CONVIDAR AMIGOS</h3>
+
+        <!-- Seção Convite -->
+        <div id="invite-section" style="display:none;">
+            <div style="background:linear-gradient(145deg,#1a1a1a,#0f0f0f);border:2px solid var(--lime);border-radius:22px;padding:16px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="font-size:26px;">🎁</span>
+                    <div><h3 style="color:var(--lime);font-size:15px;">10% de Comissão</h3><p style="font-size:11px;color:#aaa;">Por cada depósito dos indicados!</p></div>
+                </div>
+                <div style="background:#000;padding:12px;border-radius:12px;border:1px dashed var(--lime);word-break:break-all;font-size:12px;" id="invite-link-display"></div>
+                <button onclick="copyInviteLink()" style="margin-top:8px;">📋 COPIAR LINK</button>
+            </div>
+        </div>
+        <div id="invite-locked" style="text-align:center;padding:25px;background:#0a0a0a;border-radius:18px;">
+            <span style="font-size:35px;">🔒</span><p style="margin:12px 0;color:#aaa;">Ative um VIP para convidar</p>
+            <button onclick="changeScr('scr-home')">⭐ ATIVAR VIP</button>
+        </div>
+
+        <!-- Painel -->
+        <div id="invite-dashboard" style="display:none;">
+            <h4 style="color:var(--gold);margin:20px 0 12px;">📊 MEU PAINEL</h4>
+            <div class="invite-stats-panel">
+                <div class="invite-stat-card" style="border-color:var(--lime);">
+                    <div class="invite-stat-icon">👥</div>
+                    <div class="invite-stat-value" id="inv-total" style="color:var(--lime);">0</div>
+                    <div class="invite-stat-label">TOTAL</div>
+                </div>
+                <div class="invite-stat-card" style="border-color:var(--orange);">
+                    <div class="invite-stat-icon">⚡</div>
+                    <div class="invite-stat-value" id="inv-qualificados" style="color:var(--orange);">0</div>
+                    <div class="invite-stat-label">QUALIFICADOS</div>
+                </div>
+                <div class="invite-stat-card" style="border-color:var(--gold);">
+                    <div class="invite-stat-icon">⭐</div>
+                    <div class="invite-stat-value" id="inv-com-vip" style="color:var(--gold);">0</div>
+                    <div class="invite-stat-label">COM VIP</div>
+                </div>
+                <div class="invite-stat-card" style="border-color:var(--pink);">
+                    <div class="invite-stat-icon">💎</div>
+                    <div class="invite-stat-value" id="inv-comissao" style="color:var(--pink);">MT 0</div>
+                    <div class="invite-stat-label">COMISSÕES</div>
+                </div>
+            </div>
+            <div class="card" style="background:linear-gradient(135deg,#1a1a0a,#0a0a0a);text-align:center;">
+                <div style="font-size:11px;color:#aaa;">⭐ SEU VIP</div>
+                <div style="font-size:32px;font-weight:bold;color:var(--gold);" id="invite-user-vip-level">VIP 0</div>
+            </div>
+            <div class="invite-tabs">
+                <div class="invite-tab active" onclick="filterInvitedList('all')">👥 Todos</div>
+                <div class="invite-tab" onclick="filterInvitedList('qualified')">✅ Qualificados</div>
+                <div class="invite-tab" onclick="filterInvitedList('pending')">⏳ Pendentes</div>
+            </div>
+            <div class="invited-list" id="invited-users-list"></div>
+        </div>
+
+        <!-- Roleta -->
+        <div class="roulette-container">
+            <div style="color:var(--gold);font-size:16px;margin-bottom:12px;">🎡 ROLETINHA <span style="font-size:10px;background:var(--lime);color:#000;padding:2px 6px;border-radius:15px;">1x/DIA</span></div>
+            <div id="sunday-roleta-banner" class="sunday-banner"><h4>⛪ DOMINGO - ROLETA BLOQUEADA</h4></div>
+            <button id="roleta-btn" class="btn-gold" onclick="openRoulettePopup()" style="padding:18px;font-size:16px;">🎰 TENTAR A SORTE</button>
+        </div>
+        <p style="font-size:12px;color:var(--gold);margin-top:15px;">🏆 Ganhos: <span id="invite-earnings">MT 0</span></p>
+        <button onclick="logout()" style="background:transparent;border:1px solid #444;color:#888;padding:10px;width:100%;margin-top:15px;">🚪 SAIR</button>
+    </div>
+
+    <!-- POPUP ROLETA -->
+    <div id="roulette-popup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;" onclick="closeRoulettePopup()">
+        <div style="background:linear-gradient(135deg,#1a0a2a,#0a0a1a);border-radius:25px;padding:25px;max-width:320px;width:90%;text-align:center;border:3px solid var(--gold);margin:auto;position:relative;top:50%;transform:translateY(-50%);" onclick="event.stopPropagation()">
+            <h3 style="color:var(--gold);">🎡 GIRAR ROLETA</h3>
+            <div style="position:relative;width:180px;height:180px;margin:0 auto 15px;cursor:pointer;" onclick="spinRoulette()">
+                <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:26px;color:var(--gold);z-index:10;">▼</div>
+                <canvas id="roulette-canvas" width="180" height="180" style="width:100%;height:100%;border-radius:50%;transition:transform 4s;"></canvas>
+            </div>
+            <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:8px 0;">
+                <span style="background:#1a1a1a;padding:5px 8px;border-radius:15px;font-size:10px;border:1px solid #444;">MT 0-9</span>
+                <span style="background:#1a1a1a;padding:5px 8px;border-radius:15px;font-size:10px;border:1px solid #444;">MT 10-15</span>
+            </div>
+            <button onclick="closeRoulettePopup()" style="background:transparent;border:1px solid #444;color:#888;padding:10px;width:100%;margin-top:12px;">❌ Fechar</button>
+        </div>
+    </div>
+
+    <!-- PAINEL ADMIN -->
+    <div id="scr-adm" class="screen">
+        <h2 style="color:var(--lime);margin-bottom:12px;">🛡️ PAINEL ADMIN</h2>
+        <div class="card" style="background:linear-gradient(135deg,#1a2a1a,#0a1a0a);"><h3 style="color:var(--gold);">📊 ESTATÍSTICAS</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="text-align:center;"><span style="color:#aaa;">SALDO TOTAL</span><div style="font-size:22px;color:var(--lime);" id="admin-saldo-total">MT 0</div></div><div style="text-align:center;"><span style="color:#aaa;">USUÁRIOS</span><div style="font-size:22px;color:var(--gold);" id="admin-total-usuarios">0</div></div></div></div>
+        <div class="card"><h4 style="color:var(--gold);">🔍 PESQUISAR USUÁRIO</h4><div class="admin-search-box"><input type="text" id="search-user-input" placeholder="Número do usuário..."><button onclick="searchUser()">🔍</button></div><div id="search-result-container"></div></div>
+        <div class="card" style="border-left:4px solid var(--red);"><h4 style="color:var(--red);margin-bottom:12px;">🔒 BLOQUEAR/DESBLOQUEAR</h4><div class="admin-search-box"><input type="text" id="block-user-input" placeholder="Número..."><button onclick="searchUserToBlock()" style="background:var(--red);">🔍</button></div><div id="block-result-container"></div></div>
+        <div class="card"><h4 style="color:var(--gold);">👥 TODOS USUÁRIOS</h4><div style="max-height:250px;overflow-y:auto;"><table class="admin-table"><thead><tr><th>Número</th><th>Nome</th><th>Senha</th><th>VIP</th><th>Saldo</th><th>Ação</th></tr></thead><tbody id="all-users-list"></tbody></table></div></div>
+        <h3 style="color:#ffd966;">📋 PENDÊNCIAS</h3><div id="adm-list"></div>
+        <button class="btn-orange" style="margin-top:15px;" onclick="changeScr('scr-home')">🔙 Voltar</button>
+    </div>
+
+    <nav class="nav" id="menu" style="display:none;">
+        <span class="nav-link active" onclick="changeScr('scr-home')"><span class="icon">🏠</span>Home</span>
+        <span class="nav-link" onclick="changeScr('scr-dep')"><span class="icon">📥</span>Depósito</span>
+        <span class="nav-link" onclick="changeScr('scr-out')"><span class="icon">💸</span>Saque</span>
+        <span class="nav-link" onclick="changeScr('scr-invite')"><span class="icon">👥</span>Convidar</span>
+    </nav>
+</div>
+
+<script>
+// ==================== FUNÇÕES PRINCIPAIS ====================
+function isSunday(){return new Date().getDay()===0}
+function getTimeUntilMonday(){const n=new Date();let d=n.getDay()===0?1:(8-n.getDay())%7;if(d===0)d=7;const m=new Date(n);m.setDate(n.getDate()+d);m.setHours(0,0,0,0);const diff=m-n;return{hours:Math.floor(diff/3600000),minutes:Math.floor((diff%3600000)/60000),seconds:Math.floor((diff%60000)/1000)}}
+function updateSundayStatus(){const sun=isSunday();['sunday-banner','sunday-saque-banner','sunday-roleta-banner'].forEach(id=>{const el=document.getElementById(id);if(el)el.className=sun?'sunday-banner active':'sunday-banner'});const rb=document.getElementById('roleta-btn');if(rb){if(sun){rb.disabled=true;rb.textContent='⛔ BLOQUEADO'}else{rb.disabled=false;rb.textContent='🎰 TENTAR A SORTE'}};if(user&&user.lv>0)updateDailyUI();updateWithdrawalStatus()}
+function pad(n){return n.toString().padStart(2,'0')}
+
+// Firebase
+let firebaseReady=false,fbInitAttempts=0;
+const fbCheck=setInterval(()=>{fbInitAttempts++;if(window.firebaseDB){firebaseReady=true;clearInterval(fbCheck);document.getElementById('sync-status').innerHTML='✅ Online';initFirebaseListeners()}else if(fbInitAttempts>=20){clearInterval(fbCheck);document.getElementById('sync-status').innerHTML='⚠️ Modo Local';initFirebaseListeners()}else{const dots='.'.repeat((fbInitAttempts%4)+1);document.getElementById('sync-status').innerHTML=`🔄 Conectando${dots}`}},500);
+
+const VIPS=[{lv:1,ativacao:500,diario:20,total730:14600},{lv:2,ativacao:750,diario:30,total730:21900},{lv:3,ativacao:1000,diario:40,total730:29200},{lv:4,ativacao:1500,diario:60,total730:43800},{lv:5,ativacao:2000,diario:80,total730:58400},{lv:6,ativacao:3000,diario:120,total730:87600},{lv:7,ativacao:4500,diario:180,total730:131400},{lv:8,ativacao:6000,diario:240,total730:175200},{lv:9,ativacao:8000,diario:320,total730:233600},{lv:10,ativacao:12000,diario:480,total730:350400},{lv:11,ativacao:18000,diario:720,total730:525600},{lv:12,ativacao:25000,diario:1000,total730:730000},{lv:13,ativacao:35000,diario:1400,total730:1022000},{lv:14,ativacao:50000,diario:2000,total730:1460000},{lv:15,ativacao:75000,diario:3000,total730:2190000},{lv:16,ativacao:100000,diario:4000,total730:2920000},{lv:17,ativacao:200000,diario:8000,total730:5840000},{lv:18,ativacao:400000,diario:16000,total730:11680000},{lv:19,ativacao:700000,diario:28000,total730:20440000},{lv:20,ativacao:1000000,diario:40000,total730:29200000}];
+const WEALTH=[{id:'F1',name:'Fundo Bronze 1',ativacao:500,ciclo:10,valorFinal:750},{id:'F2',name:'Fundo Bronze 2',ativacao:1000,ciclo:15,valorFinal:1600},{id:'F3',name:'Fundo Prata 1',ativacao:2500,ciclo:25,valorFinal:4500},{id:'F4',name:'Fundo Prata 2',ativacao:5000,ciclo:35,valorFinal:10000},{id:'F5',name:'Fundo Ouro 1',ativacao:10000,ciclo:50,valorFinal:25000},{id:'F6',name:'Fundo Ouro 2',ativacao:20000,ciclo:70,valorFinal:55000},{id:'F7',name:'Fundo Diamante 1',ativacao:40000,ciclo:90,valorFinal:120000},{id:'F8',name:'Fundo Diamante 2',ativacao:80000,ciclo:120,valorFinal:280000},{id:'F9',name:'Fundo VIP 1',ativacao:150000,ciclo:150,valorFinal:600000},{id:'F10',name:'Fundo VIP 2',ativacao:500000,ciclo:210,valorFinal:2500000}];
+const OUTS=[{valor:100,trava:0},{valor:200,trava:0},{valor:300,trava:0},{valor:400,trava:0},{valor:500,trava:0},{valor:600,trava:0},{valor:700,trava:0},{valor:800,trava:0},{valor:900,trava:0},{valor:1000,trava:0},{valor:2000,trava:1},{valor:3000,trava:1},{valor:5000,trava:1},{valor:10000,trava:2},{valor:20000,trava:2},{valor:50000,trava:2},{valor:75000,trava:2}];
+const TAX=0.10;
+let user=null,localCache={users:{},pending:[],config:{n1:"851511841 - Benjamim Celeste"},invites:{},recoveryRequests:{}},currentInviteFilter='all';
+
+// Roleta: 0-9 peso 10, 10-15 peso 3
+function buildRSlices(){const s=[];for(let p=0;p<=9;p++){for(let i=0;i<10;i++)s.push({prize:p,color:'#32cd32'});}for(let p=10;p<=15;p++){for(let i=0;i<3;i++)s.push({prize:p,color:'#ffd700'});}for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}return s}
+const RSLICES=buildRSlices();let rRot=0;
+
+async function fbSet(path,data){if(firebaseReady)try{await window.firebaseSet(window.firebaseRef(window.firebaseDB,path),data)}catch(e){}}
+async function fbUpd(phone,data){if(firebaseReady)try{await window.firebaseUpdate(window.firebaseRef(window.firebaseDB,`users/${phone}`),data)}catch(e){}}
+
+function initFirebaseListeners(){if(!firebaseReady)return;try{
+    window.firebaseOnValue(window.firebaseRef(window.firebaseDB,'users'),(s)=>{if(s.val()){localCache.users=s.val();if(user){const u=s.val()[user.phone];if(u)user=u}updateAdminStats();renderAllUsers()}});
+    window.firebaseOnValue(window.firebaseRef(window.firebaseDB,'pending'),(s)=>{localCache.pending=s.val()?Object.values(s.val()):[];renderAdm()});
+    window.firebaseOnValue(window.firebaseRef(window.firebaseDB,'config'),(s)=>{if(s.val())localCache.config=s.val()});
+    window.firebaseOnValue(window.firebaseRef(window.firebaseDB,'invites'),(s)=>{if(s.val())localCache.invites=s.val();if(user)updateInviteDashboard()});
+    window.firebaseOnValue(window.firebaseRef(window.firebaseDB,'recoveryRequests'),(s)=>{localCache.recoveryRequests=s.val()||{};renderRecoveryRequests()});
+}catch(e){}}
+async function saveAll(){if(firebaseReady){await fbSet('users',localCache.users);await fbSet('pending',localCache.pending);await fbSet('config',localCache.config);await fbSet('invites',localCache.invites);await fbSet('recoveryRequests',localCache.recoveryRequests)}}
+
+function updateAdminStats(){let saldo=0,total=0;Object.values(localCache.users).forEach(u=>{saldo+=u.bal||0;total++});const e1=document.getElementById('admin-saldo-total');if(e1)e1.innerHTML=`MT ${saldo.toLocaleString()}`;const e2=document.getElementById('admin-total-usuarios');if(e2)e2.innerHTML=total}
+function renderAllUsers(){const tb=document.getElementById('all-users-list');if(!tb)return;let h='';Object.entries(localCache.users).forEach(([phone,u])=>{h+=`<tr><td>${phone}</td><td>${u.name||'-'}</td><td>${u.pass||'---'}</td><td>VIP ${u.lv||0}</td><td>MT ${(u.bal||0).toLocaleString()}</td><td><button class="btn-delete" onclick="deleteUser('${phone}')">🗑️</button></td></tr>`});tb.innerHTML=h||'<tr><td colspan="6" style="text-align:center;color:#888;">Nenhum usuário</td></tr>'}
+
+function searchUser(){const phone=document.getElementById('search-user-input').value.trim();const c=document.getElementById('search-result-container');if(!phone){c.innerHTML='<p style="color:#888;text-align:center;">Digite um número</p>';return}const ud=localCache.users[phone];if(!ud){c.innerHTML=`<p style="color:#888;text-align:center;">Não encontrado: ${phone}</p>`;return}c.innerHTML=`<div class="search-result-card"><h4 style="color:var(--gold);">👤 ${ud.name}</h4><div class="user-detail-grid"><div class="user-detail-item"><div class="user-detail-label">📱 Número</div><div class="user-detail-value">${phone}</div></div><div class="user-detail-item"><div class="user-detail-label">💰 Saldo</div><div class="user-detail-value">MT ${(ud.bal||0).toLocaleString()}</div></div><div class="user-detail-item"><div class="user-detail-label">⭐ VIP</div><div class="user-detail-value">Nível ${ud.lv||0}</div></div><div class="user-detail-item"><div class="user-detail-label">🔑 Senha</div><div class="user-detail-value">${ud.pass||'---'}</div></div></div><div class="user-actions"><button onclick="editBal('${phone}')" style="background:var(--blue);color:#fff;">💰 Editar Saldo</button><button class="btn-warning" onclick="resetPw('${phone}')">🔑 Resetar Senha</button><button class="btn-danger" onclick="deleteUser('${phone}')">🗑️ Excluir</button></div></div>`}
+
+async function editBal(phone){const u=localCache.users[phone];if(!u)return alert("Não encontrado!");const nb=prompt(`Saldo atual: MT ${(u.bal||0).toLocaleString()}\nNovo saldo:`,u.bal||0);if(nb===null)return;const v=parseFloat(nb);if(isNaN(v)||v<0)return alert("Inválido!");u.bal=v;localCache.users[phone]=u;await fbUpd(phone,{bal:v});await saveAll();alert("✅ Atualizado!");searchUser();renderAllUsers();updateAdminStats()}
+async function resetPw(phone){const u=localCache.users[phone];if(!u)return alert("Não encontrado!");const np=prompt(`Resetar senha de ${u.name}\nNova senha:`);if(!np)return;u.pass=np;localCache.users[phone]=u;await fbUpd(phone,{pass:np});await saveAll();alert("✅ Senha: "+np);searchUser();renderAllUsers()}
+
+function isUserBlocked(ud){return ud&&ud.blocked===true}
+function isUserPendingUnblock(ud){return ud&&ud.blocked===true&&ud.pendingUnblock===true}
+async function blockUser(phone){const u=localCache.users[phone];if(!u)return alert("Usuário não encontrado!");if(u.blocked)return alert("Já está bloqueado!");if(!confirm(`🔒 Bloquear ${u.name}?`))return;u.blocked=true;u.pendingUnblock=false;localCache.users[phone]=u;await fbUpd(phone,{blocked:true,pendingUnblock:false});await saveAll();alert(`✅ ${u.name} bloqueado!`);searchUserToBlock();if(user&&user.phone===phone){user=u;updateBlockUI()}}
+async function unblockUser(phone){const u=localCache.users[phone];if(!u)return alert("Usuário não encontrado!");if(!u.blocked)return alert("Não está bloqueado!");u.blocked=false;u.pendingUnblock=false;localCache.users[phone]=u;await fbUpd(phone,{blocked:false,pendingUnblock:false});await saveAll();alert(`✅ ${u.name} desbloqueado!`);searchUserToBlock();if(user&&user.phone===phone){user=u;updateBlockUI()}}
+function searchUserToBlock(){const phone=document.getElementById('block-user-input').value.trim();const c=document.getElementById('block-result-container');if(!phone){c.innerHTML='<p style="color:#888;">Digite um número</p>';return}const u=localCache.users[phone];if(!u){c.innerHTML='<p style="color:#888;">Não encontrado</p>';return}c.innerHTML=`<div class="search-result-card"><h4>👤 ${u.name}</h4><p>📱 ${phone} | ⭐ VIP ${u.lv||0} | 💰 MT ${(u.bal||0).toLocaleString()}</p><span class="${u.blocked?'blocked-badge':'unblocked-badge'}">${u.blocked?'🚫 BLOQUEADO':'✅ LIVRE'}</span><div class="user-actions" style="margin-top:10px;">${u.blocked?`<button class="btn-unblock" onclick="unblockUser('${phone}')">🔓 Desbloquear</button>`:`<button class="btn-block" onclick="blockUser('${phone}')">🔒 Bloquear</button>`}</div></div>`}
+function updateBlockUI(){if(!user)return;const isBlocked=isUserBlocked(user),isPending=isUserPendingUnblock(user);const bm=document.getElementById('blocked-msg-home'),pm=document.getElementById('pending-msg-home');if(bm)bm.className=(isBlocked&&!isPending)?'blocked-msg active':'blocked-msg';if(pm)pm.className=(isBlocked&&isPending)?'pending-msg active':'pending-msg';updateWithdrawalStatus()}
+
+function initDailyEarnings(){if(!user)return;if(!user.dailyPending)user.dailyPending=0;if(!user.lastCollect)user.lastCollect=0;const agora=Date.now();if(user.lastCollect===0||(agora-user.lastCollect)>=86400000){const v=VIPS.find(x=>x.lv===user.lv);if(v&&user.lv>0){user.dailyPending=v.diario;fbUpd(user.phone,{dailyPending:user.dailyPending})}}updateDailyUI()}
+function updateDailyUI(){if(!user)return;const s=document.getElementById('daily-section'),btn=document.getElementById('daily-collect-btn'),bt=document.getElementById('collect-btn-text'),ti=document.getElementById('daily-timer-info');if(user.lv>0){s.style.display='block';document.getElementById('daily-amount').innerHTML=`MT ${(user.dailyPending||0).toFixed(2)}`;const agora=Date.now(),tr=(user.lastCollect||0)+86400000-agora;if(isSunday()){btn.disabled=true;bt.innerHTML='⛪ BLOQUEADO';ti.innerHTML='<span class="daily-timer-badge" style="background:rgba(239,68,68,0.2);color:var(--red);">⛪ Domingo</span>'}else if(user.lastCollect>0&&tr>0){btn.disabled=true;const h=Math.floor(tr/3600000),m=Math.floor((tr%3600000)/60000);bt.innerHTML=`⏳ ${pad(h)}:${pad(m)}`;ti.innerHTML=`<span class="daily-timer-badge" style="background:rgba(255,69,0,0.2);color:var(--orange);">🔒 ${h}h ${m}m</span>`}else if(user.dailyPending>0){btn.disabled=false;bt.innerHTML='💰 COLETAR';ti.innerHTML='<span class="daily-timer-badge" style="background:rgba(50,205,50,0.2);color:var(--lime);">✅ Disponível</span>'}else{btn.disabled=true;bt.innerHTML='⏳ AGUARDANDO'}}else s.style.display='none'}
+async function collectDaily(){if(!user||user.lv===0)return alert("❌ Ative um VIP!");if(isSunday()){const t=getTimeUntilMonday();return alert(`⛪ Bloqueado! Volte em ${t.hours}h ${t.minutes}m`)}if(!user.dailyPending||user.dailyPending<=0)return alert("⏳ Nada disponível.");const v=user.dailyPending;user.bal+=v;user.dailyPending=0;user.lastCollect=Date.now();addEarning(v);localCache.users[user.phone]=user;await fbUpd(user.phone,{bal:user.bal,dailyPending:0,lastCollect:user.lastCollect});await saveAll();updateUI();updateDailyUI();alert(`✅ Coletou MT ${v.toFixed(2)}!`);catJump()}
+
+async function deleteUser(phone){if(!confirm(`⚠️ Excluir ${phone}?`))return;delete localCache.users[phone];Object.keys(localCache.invites).forEach(inv=>{if(localCache.invites[inv].invited)localCache.invites[inv].invited=localCache.invites[inv].invited.filter(p=>p!==phone)});await saveAll();renderAllUsers();updateAdminStats();alert("✅ Excluído!")}
+
+function renderRecoveryRequests(){const c=document.getElementById('recovery-requests-list');if(!c)return;const reqs=Object.entries(localCache.recoveryRequests||{}).filter(([_,r])=>r.status==='pending');if(!reqs.length){c.innerHTML='<p style="color:#888;">Nenhuma</p>';return}c.innerHTML=reqs.map(([phone])=>`<div style="background:#1a1a1a;border-radius:10px;padding:10px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><b>${phone}</b><button class="btn-orange" onclick="approveRecovery('${phone}')" style="padding:6px 12px;width:auto;">✅ APROVAR</button></div></div>`).join('')}
+function requestRecovery(){const phone=document.getElementById('recover-phone').value.trim();if(!phone||!localCache.users[phone])return alert("Número inválido!");localCache.recoveryRequests=localCache.recoveryRequests||{};localCache.recoveryRequests[phone]={status:'pending',timestamp:Date.now()};fbSet('recoveryRequests',localCache.recoveryRequests);alert("✅ Solicitação enviada! Contacte 851511841")}
+
+function isQualified(phone){const u=localCache.users[phone];return u&&(u.bal>0||u.lv>0||u.wealthFunds?.length>0)}
+function getConvCount(phone){const d=localCache.invites[phone];return d?.invited?.filter(p=>isQualified(p)).length||0}
+function getConvVIPCount(phone){const d=localCache.invites[phone];if(!d?.invited?.length)return 0;return d.invited.filter(p=>localCache.users[p]&&localCache.users[p].lv>0).length}
+function getInvitedUsers(){if(!user)return[];const d=localCache.invites[user.phone];if(!d?.invited?.length)return[];return d.invited.map(phone=>{const u=localCache.users[phone];const q=isQualified(phone);return{phone,name:u?.name||'Desconhecido',vip:u?.lv||0,bal:u?.bal||0,qualified:q,hasVIP:u?.lv>0}})}
+
+function updateInviteDashboard(){if(!user)return;const db=document.getElementById('invite-dashboard');if(db)db.style.display='block';const users=getInvitedUsers(),total=users.length,qual=users.filter(u=>u.qualified).length,vip=users.filter(u=>u.hasVIP).length;const invData=localCache.invites[user.phone]||{earnings:0},comissao=invData.earnings||0;document.getElementById('inv-total').textContent=total;document.getElementById('inv-qualificados').textContent=qual;document.getElementById('inv-com-vip').textContent=vip;document.getElementById('inv-comissao').textContent='MT '+comissao.toLocaleString();document.getElementById('invite-user-vip-level').textContent='VIP '+(user.lv||0);document.getElementById('invite-earnings').innerText='MT '+comissao.toLocaleString();if(user.lv>0){renderInvitedList(users)}else{document.getElementById('invited-users-list').innerHTML='<div class="no-invites">⭐ Ative um VIP para ver seus convidados</div>'}}
+function renderInvitedList(users){const c=document.getElementById('invited-users-list');if(!c)return;let f=users;if(currentInviteFilter==='qualified')f=users.filter(u=>u.qualified);else if(currentInviteFilter==='pending')f=users.filter(u=>!u.qualified);else if(currentInviteFilter==='vip')f=users.filter(u=>u.hasVIP);if(!f.length){c.innerHTML='<div class="no-invites">Nenhum encontrado</div>';return}c.innerHTML=f.map(inv=>`<div class="invited-user-card ${inv.qualified?'qualified':'not-qualified'}"><div class="invited-user-avatar ${inv.qualified?'qualified':'not-qualified'}">${inv.hasVIP?'⭐':(inv.qualified?'✅':'⏳')}</div><div class="invited-user-info"><div class="invited-user-name">${inv.name}</div><div class="invited-user-phone">📱 ${inv.phone}</div><div class="invited-user-status">${inv.qualified?'<span class="invited-status-badge status-active">✅</span>':'<span class="invited-status-badge status-pending">⏳</span>'}${inv.hasVIP?`<span class="invited-status-badge status-vip">⭐ ${inv.vip}</span>`:''}</div></div><div style="text-align:right;"><div style="font-weight:bold;color:${inv.qualified?'var(--lime)':'#888'};">MT ${inv.bal.toFixed(0)}</div></div></div>`).join('')}
+function filterInvitedList(filter){currentInviteFilter=filter;document.querySelectorAll('.invite-tab').forEach(t=>t.classList.remove('active'));if(filter==='all')document.querySelector('.invite-tab:nth-child(1)').classList.add('active');else if(filter==='qualified')document.querySelector('.invite-tab:nth-child(2)').classList.add('active');else if(filter==='vip')document.querySelector('.invite-tab:nth-child(3)').classList.add('active');renderInvitedList(getInvitedUsers())}
+
+function canWithdraw(){if(!user||isSunday()||isUserBlocked(user))return false;const now=Date.now();if(!user.lastWithdrawal)user.lastWithdrawal=0;if(!user.withdrawalCount)user.withdrawalCount=0;if(user.lastWithdrawal===0||now-user.lastWithdrawal>=86400000){user.withdrawalCount=0;return true}return user.withdrawalCount<1}
+function updateWithdrawalStatus(){const c=document.getElementById('withdrawal-status-container');if(!user)return;if(isSunday()){c.innerHTML='<span style="color:var(--red);">⛪ Bloqueado</span>';document.getElementById('btn-submit-out').disabled=true;return}if(isUserBlocked(user)){const isPending=isUserPendingUnblock(user);c.innerHTML=`<span style="color:${isPending?'var(--orange)':'var(--red)'};">${isPending?'⏳ Aguardando':'🔒 Bloqueada'}</span>`;document.getElementById('btn-submit-out').disabled=true;return}const can=canWithdraw();c.innerHTML=can?'<span style="color:var(--lime);">✅ Disponível</span>':'<span style="color:var(--orange);">⏰ Limite diário</span>';document.getElementById('btn-submit-out').disabled=!can}
+
+function catJump(){const cat=document.querySelector('.cat-mascot');if(cat){cat.style.animation='none';setTimeout(()=>cat.style.animation='bounce 1.5s infinite',10)}}
+function updateAllTimers(){updateSundayStatus();if(user?.lv>0)updateDailyUI()}
+
+const fNames=["Maria S.","João P.","Ana C.","Pedro M.","Carla R.","Rui M.","Sofia L."];
+function genFeed(){let h='';for(let i=0;i<5;i++){const d=Math.random()>0.3,n=fNames[Math.floor(Math.random()*7)],a=Math.floor(Math.random()*5000+200);h+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1a1a1a;"><div style="width:28px;height:28px;border-radius:50%;background:${d?'rgba(50,205,50,0.15)':'rgba(255,69,0,0.15)'};display:flex;align-items:center;justify-content:center;color:${d?'var(--lime)':'var(--orange)'};">${d?'📥':'💸'}</div><div style="flex:1;"><div style="font-weight:bold;font-size:13px;">${n}</div></div><div style="font-weight:bold;color:${d?'var(--lime)':'var(--orange)'};">MT ${a}</div></div>`}document.getElementById('fake-feed').innerHTML=h}
+genFeed();setInterval(genFeed,8000);
+
+function updateEDash(){if(!user)return;const t=new Date(),ts=t.toISOString().split('T')[0];if(!user.earningsHistory)user.earningsHistory={daily:{},monthly:{}};document.getElementById('earn-today').innerHTML=`MT ${(user.earningsHistory.daily[ts]||0).toLocaleString()}`;let proj=0;if(user.lv>0){const v=VIPS.find(x=>x.lv===user.lv);if(v)proj=v.total730}document.getElementById('earn-projection').innerHTML=`MT ${proj.toLocaleString()}`}
+function addEarning(amt){if(!user)return;const t=new Date(),ts=t.toISOString().split('T')[0],mk=`${t.getFullYear()}-${t.getMonth()+1}`;if(!user.earningsHistory)user.earningsHistory={daily:{},monthly:{}};user.earningsHistory.daily[ts]=(user.earningsHistory.daily[ts]||0)+amt;user.earningsHistory.monthly[mk]=(user.earningsHistory.monthly[mk]||0)+amt;localCache.users[user.phone]=user;fbUpd(user.phone,user);updateEDash()}
+
+function drawRoulette(){const cv=document.getElementById('roulette-canvas');if(!cv)return;const ctx=cv.getContext('2d'),cx=90,cy=90,r=80,slices=RSLICES.length,angle=(2*Math.PI)/slices;ctx.clearRect(0,0,180,180);for(let i=0;i<slices;i++){const sa=i*angle,ea=sa+angle;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,sa,ea);ctx.closePath();ctx.fillStyle=RSLICES[i].color;ctx.fill();ctx.strokeStyle='#000';ctx.stroke();if(i%20===0){ctx.save();ctx.translate(cx,cy);ctx.rotate(sa+angle/2);ctx.font='bold 8px Segoe UI';ctx.fillStyle='#fff';ctx.fillText('MT'+RSLICES[i].prize,45,0);ctx.restore()}}ctx.beginPath();ctx.arc(cx,cy,22,0,2*Math.PI);ctx.fillStyle='#1a1a1a';ctx.fill();ctx.strokeStyle='#ffd700';ctx.lineWidth=2;ctx.stroke();ctx.font='bold 11px Segoe UI';ctx.fillStyle='#ffd700';ctx.fillText('🎡',cx-7,cy+4)}
+async function spinRoulette(){if(!user)return;if(isSunday()){const t=getTimeUntilMonday();return alert(`⛪ Bloqueado! ${t.hours}h ${t.minutes}m`)}const today=new Date().toISOString().split('T')[0];if(!user.lastRouletteSpin)user.lastRouletteSpin=null;if(!user.rouletteSpins)user.rouletteSpins=0;if(user.lastRouletteSpin!==today){user.rouletteSpins=0;user.lastRouletteSpin=today}if(user.rouletteSpins>=1)return alert('⏳ Já usado!');const cv=document.getElementById('roulette-canvas');cv.style.transition='transform 4s';const idx=Math.floor(Math.random()*RSLICES.length),prize=RSLICES[idx].prize;rRot+=(4+Math.floor(Math.random()*5))*360+(idx*(360/RSLICES.length));cv.style.transform=`rotate(${rRot}deg)`;setTimeout(async()=>{if(prize>0){user.bal+=prize;addEarning(prize)}user.rouletteSpins=1;user.lastRouletteSpin=today;localCache.users[user.phone]=user;await fbUpd(user.phone,user);await saveAll();updateUI();updateEDash();alert(prize===0?'😢 Não foi dessa vez!':`🎉 MT ${prize}!`);if(prize>0)catJump();closeRoulettePopup()},4000)}
+function openRoulettePopup(){if(isSunday()){const t=getTimeUntilMonday();return alert(`⛪ Bloqueado! ${t.hours}h ${t.minutes}m`)}if(user){document.getElementById('roulette-popup').style.display='flex';drawRoulette()}}
+function closeRoulettePopup(){document.getElementById('roulette-popup').style.display='none'}
+
+function genLink(phone){return `${location.origin}${location.pathname}?ref=${btoa(phone)}`}
+function processRef(){const ref=new URLSearchParams(location.search).get('ref');if(ref){try{document.getElementById('ref-input').value=atob(ref)}catch(e){}}}
+function updateInviteDisplay(){if(!user)return;const v=user.lv>0;document.getElementById('invite-section').style.display=v?'block':'none';document.getElementById('invite-locked').style.display=v?'none':'block';if(v)document.getElementById('invite-link-display').innerText=genLink(user.phone)}
+function copyInviteLink(){if(user?.lv>0)navigator.clipboard?.writeText(genLink(user.phone)).then(()=>alert('✅ Copiado!'))}
+
+function switchLoginTab(t){document.querySelectorAll('.login-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.login-form').forEach(x=>x.classList.remove('active'));if(t==='login'){document.querySelectorAll('.login-tab')[0].classList.add('active');document.getElementById('login-form').classList.add('active')}else if(t==='register'){document.querySelectorAll('.login-tab')[1].classList.add('active');document.getElementById('register-form').classList.add('active')}else{document.querySelectorAll('.login-tab')[2].classList.add('active');document.getElementById('recover-form').classList.add('active')}}
+
+async function handleCreateAccount(){let n=document.getElementById('reg-name').value.trim(),p=document.getElementById('reg-phone').value.trim(),s=document.getElementById('reg-pass').value.trim();if(!n||!p||!s)return alert("Preencha tudo!");if(localCache.users[p])return alert("❌ Já cadastrado!");const ref=document.getElementById('ref-input').value.trim();localCache.users[p]={name:n,phone:p,pass:s,bal:0,lv:0,wealthFunds:[],dailyPending:0,lastCollect:0,lastWithdrawal:0,withdrawalCount:0,lastRouletteSpin:null,rouletteSpins:0,earningsHistory:{daily:{},monthly:{}},blocked:false,pendingUnblock:false,blockedAt:null,unblockInviteCount:0};if(ref&&localCache.users[ref]){if(!localCache.invites[ref])localCache.invites[ref]={invited:[],earnings:0};if(!localCache.invites[ref].invited.includes(p))localCache.invites[ref].invited.push(p);if(localCache.users[ref].blocked){localCache.users[ref].pendingUnblock=true;localCache.users[ref].unblockInviteCount=(localCache.users[ref].unblockInviteCount||0)+1;await fbUpd(ref,{pendingUnblock:true,unblockInviteCount:localCache.users[ref].unblockInviteCount})}}await saveAll();alert("🎉 Conta criada!");switchLoginTab('login');document.getElementById('login-phone').value=p}
+
+async function handleLogin(){let p=document.getElementById('login-phone').value.trim(),s=document.getElementById('login-pass').value.trim();if(!p||!s)return alert("Preencha!");let u=localCache.users[p];if(!u)return alert("Não encontrado.");if(u.pass!==s)return alert("Senha incorreta!");user=u;if(!user.dailyPending)user.dailyPending=0;if(!user.lastCollect)user.lastCollect=0;if(!user.wealthFunds)user.wealthFunds=[];if(!user.earningsHistory)user.earningsHistory={daily:{},monthly:{}};if(user.blocked===undefined)user.blocked=false;if(user.pendingUnblock===undefined)user.pendingUnblock=false;if(user.unblockInviteCount===undefined)user.unblockInviteCount=0;localCache.users[user.phone]=user;await fbUpd(user.phone,user);document.getElementById('menu').style.display='flex';changeScr('scr-home');updateInviteDisplay();updateInviteDashboard();initDailyEarnings();updateUI();updateEDash();updateAllTimers();updateSundayStatus();updateBlockUI();catJump()}
+
+function logout(){user=null;document.getElementById('menu').style.display='none';changeScr('scr-login')}
+
+function changeScr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');closeRoulettePopup();updateSundayStatus();if(id==='scr-home'){renderVips();renderWealth();renderActiveFunds();updateDailyUI();updateEDash();updateBlockUI()}if(id==='scr-dep'){document.getElementById('txt-mpesa').textContent='851511841'}if(id==='scr-out'){renderOBtns();updateWithdrawalStatus();updateBlockUI()}if(id==='scr-invite'){updateInviteDisplay();updateInviteDashboard()}if(id==='scr-adm'){renderAdm();updateAdminStats();renderAllUsers();renderRecoveryRequests()}if(user)updateUI()}
+
+function renderVips(){document.getElementById('list-vips').innerHTML=VIPS.map(v=>{const act=user&&user.lv===v.lv,pur=user&&user.lv>=v.lv,bc=v.lv<=6?'#32cd32':(v.lv<=12?'#ffd700':'#ff4500'),lucro=v.total730-v.ativacao;return`<div class="vip-card" style="border-color:${bc};"><span class="vip-badge ${v.lv<=6?'badge-vip1':(v.lv<=12?'badge-vip2':'badge-vip3')}">⭐ VIP ${v.lv}</span><div class="vip-title">Nível ${v.lv}</div><div class="vip-details"><div class="vip-item"><div class="vip-label">Ativação</div><div class="vip-value">MT ${v.ativacao.toLocaleString()}</div></div><div class="vip-item"><div class="vip-label">Diário</div><div class="vip-value">MT ${v.diario}</div></div><div class="vip-item"><div class="vip-label">Lucro</div><div class="vip-value">MT ${lucro.toLocaleString()}</div></div><div class="vip-item"><div class="vip-label">2 anos</div><div class="vip-value">MT ${v.total730.toLocaleString()}</div></div></div><div style="font-size:10px;color:#888;">📈 +${Math.round(lucro/v.ativacao*100)}%</div><button onclick="buyVip(${v.lv})" style="background:${bc};" ${pur?'disabled':''}>${act?'✅ ATIVO':(pur?'🔒 INFERIOR':'⭐ ATIVAR')}</button></div>`}).join('')}
+function renderWealth(){const convVIP=user?getConvVIPCount(user.phone):0;document.getElementById('list-wealth').innerHTML=WEALTH.map(w=>{const fc=user?.wealthFunds?.filter(f=>f.fundoId===w.id).length||0,canBuy=convVIP>=1&&fc<5;return`<div class="wealth-card" style="border-color:${canBuy?'var(--orange)':'#555'};"><span class="vip-badge badge-vip2">${w.id} ${!canBuy?'🔒':''}</span><div class="wealth-title">${w.name}</div><div class="vip-details"><div class="vip-item"><div class="vip-label">Ativação</div><div class="vip-value">MT ${w.ativacao.toLocaleString()}</div></div><div class="vip-item"><div class="vip-label">Ciclo</div><div class="vip-value">${w.ciclo}d</div></div><div class="vip-item"><div class="vip-label">Final</div><div class="vip-value">MT ${w.valorFinal.toLocaleString()}</div></div><div class="vip-item"><div class="vip-label">Lucro</div><div class="vip-value" style="color:var(--lime);">+${Math.round((w.valorFinal-w.ativacao)/w.ativacao*100)}%</div></div></div>${!canBuy?'<p style="font-size:10px;color:var(--red);text-align:center;">🔒 Convide 1 pessoa com VIP</p>':''}<button onclick="buyWealth('${w.id}')" ${!canBuy?'disabled':''}>💰 INVESTIR (${fc}/5)</button></div>`}).join('')}
+function renderActiveFunds(){const c=document.getElementById('active-funds-list');if(!c)return;if(!user?.wealthFunds?.length){c.innerHTML='<p style="color:#888;text-align:center;">Nenhum fundo ativo</p>';return}const sorted=[...user.wealthFunds].sort((a,b)=>a.expiry-b.expiry);c.innerHTML=sorted.map((fund,i)=>{const now=Date.now(),tl=fund.expiry-now,exp=tl<=0,prog=Math.max(0,Math.min(100,((fund.ciclo*86400000-tl)/(fund.ciclo*86400000))*100));const d=Math.max(0,Math.ceil(tl/86400000)),h=Math.floor((tl%86400000)/3600000),m=Math.floor((tl%3600000)/60000);return`<div class="fund-item" style="border-left-color:${i===0?'var(--gold)':'var(--orange)'};"><div class="fund-header"><span class="fund-name">${fund.name}</span><span class="fund-count">${i+1}º</span></div><div class="fund-dates"><div>📅 ${new Date(fund.purchaseDate).toLocaleDateString('pt-BR')}</div><div>⏰ ${new Date(fund.expiry).toLocaleDateString('pt-BR')}</div><div>💰 MT ${fund.total.toLocaleString()}</div></div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%;"></div></div><div style="display:flex;justify-content:space-between;font-size:11px;"><span>${exp?'✅ Pronto!':`⏳ ${d}d ${h}h ${m}m`}</span><span>${Math.round(prog)}%</span></div>${exp?`<button onclick="rescueFund(${i})" style="margin-top:8px;padding:6px;background:var(--lime);color:#000;">💰 RESGATAR</button>`:''}</div>`}).join('')}
+async function rescueFund(i){if(!user?.wealthFunds)return;const sorted=[...user.wealthFunds].sort((a,b)=>a.expiry-b.expiry),fund=sorted[i];if(Date.now()<fund.expiry)return alert("Não venceu!");const oi=user.wealthFunds.findIndex(f=>f.expiry===fund.expiry&&f.fundoId===fund.fundoId);if(oi===-1)return;user.bal+=fund.total;addEarning(fund.total-fund.ativacao);user.wealthFunds.splice(oi,1);localCache.users[user.phone]=user;await fbUpd(user.phone,user);await saveAll();updateUI();renderActiveFunds();renderWealth();alert(`🎉 MT ${fund.total.toLocaleString()}!`);catJump()}
+async function buyVip(lv){if(!user)return;const v=VIPS.find(x=>x.lv==lv);if(user.bal<v.ativacao)return alert("❌ Saldo insuficiente!");if(!confirm(`VIP ${lv} por MT ${v.ativacao.toLocaleString()}?`))return;user.bal-=v.ativacao;user.lv=lv;user.dailyPending=v.diario;user.lastCollect=0;localCache.users[user.phone]=user;await fbUpd(user.phone,user);await saveAll();updateUI();renderVips();renderWealth();updateDailyUI();updateInviteDisplay();updateInviteDashboard();updateEDash();catJump();alert(`🎉 VIP ${lv}!`)}
+async function buyWealth(id){if(!user)return;const w=WEALTH.find(x=>x.id==id),convVIP=getConvVIPCount(user.phone);if(convVIP<1)return alert("🔒 Convide 1 pessoa com VIP!");if(!user.wealthFunds)user.wealthFunds=[];if(user.wealthFunds.filter(f=>f.fundoId===id).length>=5)return alert("⚠️ Limite 5!");if(user.bal<w.ativacao)return alert("❌ Saldo!");if(!confirm(`Investir MT ${w.ativacao.toLocaleString()}?`))return;user.bal-=w.ativacao;const exp=new Date();exp.setDate(exp.getDate()+w.ciclo);user.wealthFunds.push({name:w.name,fundoId:w.id,ativacao:w.ativacao,total:w.valorFinal,ciclo:w.ciclo,purchaseDate:Date.now(),expiry:exp.getTime()});localCache.users[user.phone]=user;await fbUpd(user.phone,user);await saveAll();updateUI();renderActiveFunds();renderWealth();alert(`🏦 ${w.name}!`)}
+function renderOBtns(){if(!user)return;const convVIP=getConvVIPCount(user.phone);document.getElementById('grid-out').innerHTML=OUTS.map(b=>{const lib=convVIP>=b.trava&&!isSunday()&&!isUserBlocked(user);return`<button style="padding:10px;background:#1e1e1e;color:var(--gold);border-radius:10px;font-size:12px;border:1px solid #333;${!lib?'opacity:0.5;':''}" onclick="setO(${b.valor})" ${!lib?'disabled':''}>MT ${b.valor}<span style="font-size:8px;display:block;color:#888;">${isSunday()?'⛪':isUserBlocked(user)?'🔒':(b.trava===0?'✅':(convVIP>=b.trava?'🔓':'🔒'+b.trava+' VIP'))}</span></button>`}).join('')}
+let selO=0;
+function setO(v){if(!user||isSunday()||isUserBlocked(user))return;if(getConvVIPCount(user.phone)<OUTS.find(b=>b.valor===v).trava)return alert("⚠️ Mais convidados VIP!");selO=v;document.getElementById('out-val').value="MT "+v}
+async function sendDep(){if(!user)return;const num=document.getElementById('dep-numero').value.trim(),nom=document.getElementById('dep-nome').value.trim(),amt=parseFloat(document.getElementById('in-amt').value),ref=document.getElementById('in-ref').value.trim();if(!num||!nom||!amt||!ref)return alert("Preencha tudo!");localCache.pending.push({type:'DEP',name:user.name,phone:user.phone,depNumero:num,depNome:nom,amt,ref,timestamp:Date.now()});await saveAll();alert("📤 Enviado!");changeScr('scr-home')}
+async function sendOut(){if(!user||isSunday())return;if(!canWithdraw())return alert("⏰ Limite diário!");const num=document.getElementById('out-numero').value.trim(),nom=document.getElementById('out-nome').value.trim(),v=selO;if(!num||!nom||!v)return alert("Preencha!");if(user.bal<v)return alert("Saldo!");const taxa=v*TAX;if(!confirm(`Sacar MT ${v}? Recebe MT ${(v-taxa).toFixed(2)}`))return;user.bal-=v;user.lastWithdrawal=Date.now();user.withdrawalCount=(user.withdrawalCount||0)+1;localCache.users[user.phone]=user;localCache.pending.push({type:'SAQUE',name:user.name,phone:user.phone,saqueNumero:num,saqueNome:nom,amt:v,liq:v-taxa,timestamp:Date.now()});await fbUpd(user.phone,user);await saveAll();updateUI();updateWithdrawalStatus();alert("💸 Enviado!");changeScr('scr-home')}
+
+let clicks=0;
+function tapAdm(){clicks++;if(clicks>=5&&prompt("Senha:")==="adm123adm"){changeScr('scr-adm');renderAdm();updateAdminStats();renderAllUsers();renderRecoveryRequests();clicks=0}else if(clicks>=5){alert("❌ Incorreta!");clicks=0}setTimeout(()=>clicks=0,2000)}
+function renderAdm(){if(!localCache.pending.length){document.getElementById('adm-list').innerHTML='<p style="color:#888;">✅ Nenhuma pendência</p>';return}document.getElementById('adm-list').innerHTML=localCache.pending.map((p,i)=>{if(p.type==='SAQUE')return`<div class="card" style="border-left:4px solid var(--orange);"><b>SAQUE #${i+1}</b><div>${p.name} - ${p.phone}</div><div>MT ${p.amt.toFixed(2)} | Pagar: MT ${(p.amt*0.9).toFixed(2)}</div><div style="display:flex;gap:8px;margin-top:8px;"><button style="background:#22c55e;padding:10px;" onclick="admAct(${i},true)">✅</button><button style="background:#ef4444;padding:10px;" onclick="admAct(${i},false)">❌</button></div></div>`;return`<div class="card" style="border-left:4px solid var(--lime);"><b>DEP #${i+1}</b><div>${p.name} - ${p.phone}</div><div>MT ${p.amt.toFixed(2)}</div><div style="display:flex;gap:8px;margin-top:8px;"><button style="background:#22c55e;padding:10px;" onclick="admAct(${i},true)">✅</button><button style="background:#ef4444;padding:10px;" onclick="admAct(${i},false)">❌</button></div></div>`}).join('')}
+async function admAct(i,ok){let p=localCache.pending[i];if(ok&&p.type==='DEP'){if(localCache.users[p.phone]){localCache.users[p.phone].bal+=p.amt;await fbUpd(p.phone,{bal:localCache.users[p.phone].bal})}const inv=Object.keys(localCache.users).find(k=>localCache.invites[k]?.invited?.includes(p.phone));if(inv){const com=p.amt*0.10;localCache.users[inv].bal+=com;if(!localCache.invites[inv])localCache.invites[inv]={invited:[],earnings:0};localCache.invites[inv].earnings+=com;await fbUpd(inv,{bal:localCache.users[inv].bal});await fbSet('invites',localCache.invites)}for(const[ip,id]of Object.entries(localCache.invites)){if(id.invited&&id.invited.includes(p.phone)){const inviter=localCache.users[ip];if(inviter&&inviter.blocked&&inviter.pendingUnblock){const du=localCache.users[p.phone];if(du&&du.lv>0){inviter.blocked=false;inviter.pendingUnblock=false;localCache.users[ip]=inviter;await fbUpd(ip,{blocked:false,pendingUnblock:false});alert(`🎉 ${inviter.name} DESBLOQUEADO!\nConvidado ${du.name} ativou VIP ${du.lv}!`);if(user&&user.phone===ip){user=inviter;updateBlockUI()}}}}}}if(!ok&&p.type==='SAQUE'){if(localCache.users[p.phone]){localCache.users[p.phone].bal+=p.amt;localCache.users[p.phone].withdrawalCount--;await fbUpd(p.phone,{bal:localCache.users[p.phone].bal})}}if(ok&&p.type==='SAQUE')alert(`✅ Saque aprovado! Envie MT ${(p.amt*0.9).toFixed(2)}`);localCache.pending.splice(i,1);await saveAll();renderAdm();if(user&&localCache.users[user.phone]){user=localCache.users[user.phone];updateUI()}}
+function updateUI(){if(user){const u=localCache.users[user.phone];if(u){user=u;document.getElementById('bal-txt').innerHTML="MT "+user.bal.toLocaleString(undefined,{minimumFractionDigits:2});document.getElementById('user-info').innerHTML=`${user.name} | VIP ${user.lv||0} | 👥 ${getConvCount(user.phone)}`}}}
+function switchTab(n){document.getElementById('list-vips').style.display=n==1?'flex':'none';document.getElementById('list-wealth').style.display=n==2?'flex':'none';document.getElementById('t1').className=n==1?'tab active':'tab';document.getElementById('t2').className=n==2?'tab active':'tab'}
+
+// Copiar números de depósito
+setTimeout(()=>{
+    ['txt-mpesa','txt-emola'].forEach(id=>{
+        const el=document.getElementById(id);if(!el)return;
+        el.style.cursor='pointer';
+        el.addEventListener('click',function(){
+            const num=this.textContent.trim();
+            navigator.clipboard?.writeText(num).then(()=>{
+                const orig=this.textContent;this.textContent='✅ Copiado!';this.style.color='#fff';
+                setTimeout(()=>{this.textContent=orig;this.style.color=''},1500);
+            }).catch(()=>{alert('📋 '+num)});
+        });
+    });
+},1500);
+
+// Init
+processRef();setInterval(updateAllTimers,5000);setInterval(()=>{if(user){updateUI();initDailyEarnings();updateDailyUI();updateEDash();updateInviteDashboard()}},30000);updateSundayStatus();
+</script>
+</body>
+</html>
